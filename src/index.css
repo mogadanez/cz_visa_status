@@ -19,23 +19,54 @@ body {
 }
 
 
+
+
 .tools{
   padding: 20px;
   flex-grow: 1;
 }
+.error{
+  color:red;
+}
+
+.success{
+  color: #0be0ad;
+}
+
+.filterLabel{
+  font-weight: bold;
+}
+
+.filterContains{
+  font-style: italic;
+}
+
+
+
 footer{
   background-color: #0BE0AD;
   position: relative;
   height: 200px;
 
 }
+footer a{
+  text-decoration: none;
+  color: white;
+  line-height: 30px;
+}
 
 footer .container{
-  max-width: 900px;
-  margin: auto 0;
+  max-width: 700px;
+  margin: 0 auto;
+  justify-content: space-between;
 }
 
 
+footer .container .col{
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
 
 footer:before{
   display: inline-block;
