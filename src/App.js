@@ -10,6 +10,7 @@ import TextField from 'material-ui/TextField';
 import Icon from "material-ui/Icon";
 import SendIcon from "material-ui-icons/Send";
 var rawData = null;
+var lastUpdated = null;
 var cities = null;
 
 const loadData = ()=>{
@@ -17,7 +18,13 @@ const loadData = ()=>{
                           axios.get("https://visa.poigraem.ru/data/cities.json")
     ])
     .then(([ resData, resCity ])=>{
-          rawData = _.values(resData.data);
+
+          if ( resData.data.__version == 2 ){
+            rawData = _.values(resData.data.applications);
+            lastUpdated = resData.data.lastUpdated;
+          }
+          else
+            rawData = _.values(resData.data)
           cities =  resCity.data;
           cities.unshift("");
           return rawData ;
@@ -37,7 +44,7 @@ class App extends Component {
         };
         loadData().then(()=>{
             var  ff = this.loadFilters();
-            this.setState( {data:rawData, cities:cities, loading:false, filtered:  ff })
+            this.setState( {data:rawData, cities,lastUpdated, loading:false, filtered:  ff })
         })
     }
 
@@ -76,8 +83,6 @@ class App extends Component {
         }
         else
             this.setState({subscribeFiltersError: null })
-        //TakoKid61,
-        //Belmont8028
             axios.post("https://gnkz23t88c.execute-api.us-east-1.amazonaws.com/prod/subscription", {email: this.state.subscribeEmail, filters  } )
             .then(res=>{
                 this.setState({subscribeFiltersError: null,  subscribeSuccess: "Subscribe established successfully" })
@@ -98,7 +103,7 @@ class App extends Component {
     }
 
     render() {
-        const { data, cities, loading, filtered, subscribeEmail, subscribeEmailError, subscribeFiltersError, subscribeSuccess } = this.state;
+        const { data, cities, loading, lastUpdated, filtered, subscribeEmail, subscribeEmailError, subscribeFiltersError, subscribeSuccess } = this.state;
         return (
             <div>
             <div className="container">
@@ -162,6 +167,9 @@ class App extends Component {
 
                 <div className="tools">
                     <form action="//visaapi.poigraem.ru/subscribe" method="POST">
+                        {lastUpdated? (<p>
+                            Last updated: <strong>{new Date(lastUpdated).toLocaleString()}</strong>
+                        </p>):null}
                         <p>
                             Description
                         </p>
